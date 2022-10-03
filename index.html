@@ -60,7 +60,7 @@
       .inner-card {
         padding: 30px 50px 20px 50px;
         border-radius: 30px;
-        max-width: 40%;
+        max-width: 300px;
         margin-bottom: 40px;
         background-color: rgba(219, 237, 250, 0.5);
       }
@@ -187,7 +187,7 @@
       };
 
 
-      fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_short_term.json')
+      fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_short_term.json', {cache: "no-store"})
         .then(response => response.json())
         .then(data => {
           chart_consumption_short_term(data)
@@ -195,7 +195,7 @@
         }
           );
 
-      fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_daily.json')
+      fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_daily.json', {cache: "no-store"})
         .then(response => response.json())
         .then(data => {
           chart_consumption_max_daily(data)
