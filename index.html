@@ -9,13 +9,13 @@
     <title>TrackWatt</title>
 
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@monkeypoxtracke" />
-    <meta name="twitter:title" content="MonkeypoxTracker" />
-    <meta name="twitter:description" content="Suivi de l'épidémie de variole du singe ou Monkeypox en France et dans le monde ainsi que la campagne de vaccination." />
+    <meta name="twitter:site" content="@TrackWatt_" />
+    <meta name="twitter:title" content="TrackWatt" />
+    <meta name="twitter:description" content="Suivi de la consommation et production d'électricité en France." />
 
-    <meta property="og:url" content="http://www.monkeypoxtracker.fr" />
-    <meta property="og:title" content="MonkeypoxTracker" />
-    <meta property="og:description" content="Suivi de l'épidémie de variole du singe ou Monkeypox en France et dans le monde ainsi que la campagne de vaccination." />
+    <meta property="og:url" content="http://www.trackwatt.fr" />
+    <meta property="og:title" content="TrackWatt" />
+    <meta property="og:description" content="Suivi de la consommation et production d'électricité en France." />
     <meta property="og:image" content="" />
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/headers/">
@@ -26,6 +26,63 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+
+      .parent {
+        border: 0px solid black;
+        text-align: center;
+      }
+      .child {
+        display: inline-block;
+        border: 0px solid red;
+        vertical-align: bottom;
+        margin-right: 10px;
+      }
+
+      /* */
+      input[type=checkbox]{
+        height: 0;
+        width: 0;
+        visibility: hidden;
+      }
+
+      label {
+        cursor: pointer;
+        text-indent: -9999px;
+        width: 50px;
+        height: 30px;
+        background: grey;
+        display: block;
+        border-radius: 50px;
+        position: relative;
+      }
+
+      label:after {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 20px;
+        transition: 0.3s;
+      }
+
+      input:checked + label {
+        background: #bada55;
+      }
+
+      input:checked + label:after {
+        left: calc(100% - 5px);
+        transform: translateX(-100%);
+      }
+
+      label:active:after {
+        width: 40px;
+      }
+ 
+      /* */
+
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -142,13 +199,27 @@
               <br>
               <span id="instant_power_datetime" style="font-size: 15px;">--h--</span>
               <br>
-              <span style="font-size: 20px; margin-top: 20px;"><b>Puissance max actuelle</b></span>
+              <span style="font-size: 20px; margin-top: 20px;"><b>Puissance consommée actuelle</b></span>
               
             </span>
           </div>
-          <p><b>Cela correspond à la puissance instantannée consommée (en MW). Si l'électricité était de l'eau, cela correspondrait au débit, donc au nombre de litres écoulés à chaque instant.</b></p>
+          <p><b>Cela correspond à la puissance instantannée consommée (en MW).</b> Par analogie, cela représente l'énergie dépensée à chaque instant par un randonneur : s'il avance vite (intensité électrique) et si la pente est raide (tension électrique), alors il doit produire un gros effort (puissance électrique). La puissance (en Watt) dépend donc de la tension (en Volt) et de l'intensité (en Ampère).</p>
           <p>MW signifie Mega Watts, cela correspond à un million de Watts. Pour comparaison, un sèche-cheveux ou un four consomme environ 2 Watts.</p>
           <div id="consumptionShortTerm" class="centered"></div>
+          
+          <!--
+          <div class='parent'>
+            <div class='child'>
+              <input type="checkbox" id="switch_max" /><label for="switch"></label> 
+            </div>
+            <div class='child'> Afficher le maximum</div>
+          </div>
+          -->
+
+          <div>
+            
+          </div>
+          
           <p>© trackwatt.fr • Données : RTE.</p>
         </div>
 
@@ -177,6 +248,7 @@
       };
 
       const layout = {
+        shapes: [],
         xaxis: {fixedrange: true},
         yaxis: {fixedrange: true},
         plot_bgcolor:"rgba(0,0,0,0)",
@@ -196,7 +268,59 @@
         this.document.getElementById("instant_power").innerHTML = (data.consumption_realised.at(0)).toLocaleString("FR");
       }
       
-      function chart_consumption_short_term(data){
+      function chart_consumption_short_term(data, show_maximum=false){
+        chart_layout = { ...layout };
+        chart_layout["annotations"] = [{
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.5,
+            xanchor: 'middle',
+            y: 1,
+            yanchor: 'bottom',
+            text: 'Max observé en hiver',
+            font: {color: 'rgba(255, 0, 0, 0.7)', size: 10},
+            showarrow: false
+          },
+          {
+            xref: 'x',
+            yref: 'y',
+            x: data.datetime.at(0),
+            xanchor: 'right',
+            y: data.consumption_realised.at(0),
+            yanchor: 'bottom',
+            text:  data.consumption_realised.at(0).toLocaleString("FR") + ' MW<br>consommés actu.',
+            showarrow: true,
+            arrowhead: 4,
+            yshift: 3,
+            ax: 0,
+            font: {color: "rgb(0, 0, 0)"}
+          },]
+          
+
+        if (show_maximum == false) {
+          chart_layout["shapes"].push(
+              {
+                  type: 'line',
+                  xref: 'paper',
+                  x0: 0,
+                  y0: 87000,
+                  x1: 1,
+                  y1: 87000,
+                  line:{
+                      color: 'rgb(255, 0, 0)',
+                      width: 1,
+                      dash:'dot'
+                  }
+              },
+          )
+        }
+               
+
+        chart_layout["yaxis"] = {
+          title: "Puissance électrique (MG)",
+          automargin: true,
+        }
+
         var data_chart = [
           {
             x: data.datetime,
@@ -204,20 +328,43 @@
             type: 'line',
             fill: 'tozeroy',
             line: {
-              color: 'rgb(219, 64, 82)',
+              color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
               width: 5
             }
           }
         ];
 
-        Plotly.newPlot('consumptionShortTerm', data_chart, layout, config);
+        Plotly.newPlot('consumptionShortTerm', data_chart, chart_layout, config);
       }
 
       function chart_consumption_max_daily(data){
+        chart_layout = { ...layout };
+        chart_layout["yaxis"] = {
+          title: "Puissance électrique (MG)",
+          automargin: true,
+        }
+
+        chart_layout["shapes"] = [];
+
+        chart_layout["annotations"] = [{
+            xref: 'x',
+            yref: 'y',
+            x: data.month.at(0),
+            xanchor: 'right',
+            y: data.max_monthly_power_consumption.at(0),
+            yanchor: 'bottom',
+            text:  data.max_monthly_power_consumption.at(0).toLocaleString("FR") + ' MW max sur<br>le mois actuel',
+            showarrow: true,
+            arrowhead: 4,
+            yshift: 0,
+            ax:0,
+            font: {color: "rgb(0, 0, 0)"}
+          },]
+
         var data_chart = [
           {
-            x: data.day,
-            y: data.max_daily_power_consumption,
+            x: data.month,
+            y: data.max_monthly_power_consumption,
             type: 'bar',
             fill: 'tozeroy',
             line: {
@@ -226,8 +373,9 @@
             }
           }
         ];
+        
 
-        Plotly.newPlot('consumptionMaxDaily', data_chart, layout, config);
+        Plotly.newPlot('consumptionMaxDaily', data_chart, chart_layout, config);
       }
 
       function main(){
@@ -239,7 +387,7 @@
         }
           );
 
-      fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_daily.json', {cache: "no-store"})
+      fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_monthly.json', {cache: "no-store"})
         .then(response => response.json())
         .then(data => {
           chart_consumption_max_daily(data)
