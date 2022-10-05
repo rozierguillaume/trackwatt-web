@@ -207,7 +207,7 @@
             </span>
           </div>
 
-          <p><b>Cela correspond à la puissance instantanée consommée (en MW).</b> Par analogie, cela représente l'énergie dépensée à chaque instant par un randonneur : s'il avance vite (intensité électrique) et si la pente est raide (tension électrique), alors il doit produire un gros effort (puissance électrique). La puissance (en Watt) dépend donc de la tension (en Volt) et de l'intensité (en Ampère).</p>
+          <p><b>Cela correspond à la puissance actuellement consommée (en MW).</b> Par analogie, cela représente l'énergie dépensée à chaque seconde par un randonneur : s'il avance vite (intensité électrique) et si la pente est raide (tension électrique), alors il doit produire un gros effort (puissance électrique). La puissance (en Watt) dépend donc de la tension (en Volt) et de l'intensité (en Ampère).</p>
           <p>MW signifie Mega Watts, cela correspond à un million de Watts. Pour comparaison, un sèche-cheveux ou un four consomme environ 2 kW.</p>
           
           <div id="consumptionShortTerm" class="centered"></div>
@@ -224,13 +224,13 @@
           <p>© trackwatt.fr • Données : RTE.</p>
         </div>
 
-        <div class="container">
 
-          <h1>Énergie consommée</h1>
-  
+        <h1>Énergie consommée</h1>
+        <p>L'énergie consommée correspond à la quantité totale d'électricité qui a été utilisée par les Français. L'objectif fixé par le gouvernement est de consommer 10% moins d'électricité cet hiver par rapport aux années habituelles.</p>
+
+
           <div class="card">
             <h2 id="puissance">Énergie consommée depuis le début du mois</h2>
-
             <div class="inner-card" id="inner_card_current_month_energy_consumption_evolution">
               <span style="font-size: 15px;">
                 <span id="current_month_energy_consumption_evolution" style="font-size: 35px; font-weight: bold;">--</span>
@@ -244,14 +244,16 @@
               </span>
             </div>
 
-            
-  
-            <p>Comparaison de l'énergie consommée en France depuis le 1er du mois actuel, avec la consommation habituelle sur le même mois des années précédentes.</p>
+            <p>Comparaison de l'énergie consommée en France depuis le 1er du mois actuel, avec la consommation habituelle sur le même mois des années précédentes.
+              Lorsque la courbe bleue est située au-dessus de la ligne noire, cela signifique que l'on a consommé plus d'électricité depuis le début du mois actuel, par rapport à un mois habituel. 
+            </p>
             <div id="currentMonthEnergyConsumption" class="centered"></div>
             
             <p>© trackwatt.fr • Données : RTE.</p>
           </div>
-
+        
+        <h1>Quels sont les pics de puissance électrique ?</h1>
+        <p>Des pics de puissances interviennent à certains moments de la journée, et certains mois de l'année. Si la production d'électricité n'est pas suffisante, certaines actions doivent être mises en place par RTE comme des baisses de tension ou délestages (coupures tournantes de lignes pendant 2h).</p>
         <div class="card">
           <h2 id="puissance_max">Pic mensuel de puissance</h2>
           <p>Cela correspond à la puissance d'électricité consommée au plus haut de chaque mois. Ce pic de puissance est plus élevé en hiver, entre autres du fait d'une utilisation de chauffage.</p>
@@ -434,21 +436,6 @@
 
         var data_chart = [
           {
-            x: data_current.day,
-            y: data_current.cumsum,
-            type: 'line+markers',
-            name: 'octobre 2022',
-            hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée 2022 : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
-
-            line: {
-              color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
-              width: 5
-            },
-            marker: {
-              size: 10
-            }
-          },
-          {
             x: data_daily.day,
             y: data_daily.energy_consumption_cumsum,
             type: 'markers',
@@ -461,6 +448,21 @@
             },
             marker: {
               size: 15
+            }
+          },
+          {
+            x: data_current.day,
+            y: data_current.cumsum,
+            type: 'line+markers',
+            name: 'octobre 2022',
+            hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée 2022 : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
+
+            line: {
+              color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
+              width: 3
+            },
+            marker: {
+              size: 10
             }
           }
         ];
