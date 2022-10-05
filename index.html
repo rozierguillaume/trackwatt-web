@@ -213,11 +213,14 @@
               <br>
               <span id="instant_power_datetime" style="font-size: 15px;">--h--</span>
               <br>
-              <span style="font-size: 20px; margin-top: 20px;"><b>Puissance consommée actuelle</b></span>
+              <span style="font-size: 20px; margin-top: 20px;"><b>Puissance instantanée</b></span>
             </span>
           </div>
 
-          <p><b>Cela correspond à la puissance actuellement consommée (en MW).</b> Par analogie, cela représente l'énergie dépensée à chaque seconde par un randonneur : s'il avance vite (intensité électrique) et si la pente est raide (tension électrique), alors il doit produire un gros effort (puissance électrique). La puissance (en Watt) dépend donc de la tension (en Volt) et de l'intensité (en Ampère).</p>
+          <p><b>Cela correspond à la puissance actuellement consommée (en MW)</b>, c'est-à-dire la quantité d'énergie consommée à chaque instant. 
+            Par analogie avec un randonneur : 
+            s'il avance vite (intensité électrique) et si la pente est raide (tension électrique), alors il doit produire un gros effort 
+            (puissance électrique). La puissance (en Watt) dépend donc de la tension (en Volt) et de l'intensité (en Ampère).</p>
           <p>MW signifie Mega Watts, cela correspond à un million de Watts. Pour comparaison, un sèche-cheveux ou un four consomme environ 2 kW.</p>
           
           <div id="consumptionShortTerm" class="centered"></div>
@@ -240,7 +243,7 @@
 
 
           <div class="card">
-            <h2 id="puissance">Énergie consommée depuis le début du mois</h2>
+            <h2 id="puissance">Depuis le début du mois</h2>
             <div class="inner-card" id="inner_card_current_month_energy_consumption_evolution">
               <span style="font-size: 15px;">
                 <span id="current_month_energy_consumption_evolution" style="font-size: 35px; font-weight: bold;">--</span>
@@ -248,7 +251,7 @@
                 <br>du 
                 <span id="current_month_energy_consumption_evolution_day" style="font-size: 15px;">--/--/--</span>
                 <br>
-                <span style="font-size: 20px; margin-top: 20px;"><b>Évolution de consommation</b></span>
+                <span style="font-size: 20px; margin-top: 20px;"><b>Évolution de consommation d'énergie</b></span>
                 <br>
                 <span>par rapport à la moyenne des autres années</span>
               </span>
@@ -443,33 +446,36 @@
         chart_layout["xaxis"]["spikesnap"] = "cursor"
         chart_layout["xaxis"]["spikecolor"] = "black"
         chart_layout["xaxis"]["spikethickness"] = 2
-
+        chart_layout["xaxis"]["range"] = [data_current.day.at(-1), data_current.day.at(0)]
+        chart_layout["xaxis"]["tickformat"]="%d/%m"
+        chart_layout["xaxis"]["ticklabelmode"]="instant"
+        
         var data_chart = [
           {
-            x: data_daily.day,
-            y: data_daily.energy_consumption_cumsum,
+            x: data_daily.day.slice(0, data_current.cumsum.length),
+            y: data_daily.energy_consumption_cumsum.slice(0, data_current.cumsum.length),
             type: 'markers',
-            name: "Moyenne des années précédentes",
+            name: "Années précédentes",
             hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée hab. : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
-
+            
             line: {
-              color: 'rgba(0, 0, 0, 0.7)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
-              width: 2
+              color: 'rgba(0, 0, 0, 0.9)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
+              width: 3,
+              dash: "dot"
             },
             marker: {
-              size: 15
+              size: 5
             }
           },
           {
             x: data_current.day,
             y: data_current.cumsum,
             type: 'line+markers',
-            name: 'octobre 2022',
+            name: 'Octobre 2022',
             hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée 2022 : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
-
             line: {
               color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
-              width: 3
+              width: 5
             },
             marker: {
               size: 10
