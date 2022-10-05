@@ -26,16 +26,14 @@
     <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-
-      .parent {
-        border: 0px solid black;
-        text-align: center;
-      }
-      .child {
-        display: inline-block;
-        border: 0px solid red;
-        vertical-align: bottom;
-        margin-right: 10px;
+      button {
+        box-shadow: 0 6px 10px 0 rgba(0,0,0,0.05);
+        padding: 5px 5px 5px 5px;
+        width: 50%;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        border: rgb(205, 205, 205) solid 1px;
+        background-color: rgba(255, 255, 255, 1);
       }
 
       /* */
@@ -186,9 +184,11 @@
         </header>
       </div>
 
-      <div class="container">
+      <div class="container" style="max-width: 1100px;">
 
         <h1>Consommation électrique en temps réel</h1>
+        <p>TrackWatt est un site internet permettant de suivre la consommation et production d'électricité en France. Les données proviennent de <a href="https://www.rte-france.com/">RTE</a>, 
+          le réseau de transport de l'électricité en France. Les données sont mises à jour en temps réel.</p>
 
         <div class="card">
           <h2 id="puissance">Puissance électrique consommée</h2>
@@ -256,8 +256,16 @@
           <p>© trackwatt.fr • Données : RTE.</p>
         </div>
 
+        <h1>Et bientôt...</h1>
+        <div class="card">
+          <h2>De nouvelles fonctionnalités arrivent</h2>
+          <p>TrackWatt est en cours de construction, de nouvelles fonctionnalités arrivent bientôt dans le domaine de la consommation et production d'énergie. Pensez à revenir régulièrement !</p>
+          <button type="button" onclick="location.href='https://twitter.com/trackwatt_'">S'abonner à @TrackWatt</button>
+          <button type="button" onclick="location.href='https://twitter.com/guillaumerozier'">S'abonner à @GuillaumeRozier</button>
+        </div>
+
         <h2 id="APropos">À propos</h2>
-        <p>© trackwatt.fr - @GuillaumeRozier.</p>
+        <p>© trackwatt.fr - @GuillaumeRozier - <a href="https://trackwatt.fr/mentions_legales.html">mentions légales</a></p>
 
 
       </div>
