@@ -118,7 +118,7 @@
       .inner-card {
         padding: 30px 50px 20px 50px;
         border-radius: 30px;
-        max-width: 350px;
+        max-width: 450px;
         margin-bottom: 40px;
         background-color: rgba(219, 237, 250, 0.5);
       }
@@ -192,6 +192,7 @@
 
         <div class="card">
           <h2 id="puissance">Puissance électrique consommée</h2>
+
           <div class="inner-card">
             <span style="font-size: 15px;">
               <span id="instant_power" style="font-size: 35px; font-weight: bold;">--</span>
@@ -200,11 +201,12 @@
               <span id="instant_power_datetime" style="font-size: 15px;">--h--</span>
               <br>
               <span style="font-size: 20px; margin-top: 20px;"><b>Puissance consommée actuelle</b></span>
-              
             </span>
           </div>
+
           <p><b>Cela correspond à la puissance instantannée consommée (en MW).</b> Par analogie, cela représente l'énergie dépensée à chaque instant par un randonneur : s'il avance vite (intensité électrique) et si la pente est raide (tension électrique), alors il doit produire un gros effort (puissance électrique). La puissance (en Watt) dépend donc de la tension (en Volt) et de l'intensité (en Ampère).</p>
           <p>MW signifie Mega Watts, cela correspond à un million de Watts. Pour comparaison, un sèche-cheveux ou un four consomme environ 2 Watts.</p>
+          
           <div id="consumptionShortTerm" class="centered"></div>
           
           <!--
@@ -215,17 +217,41 @@
             <div class='child'> Afficher le maximum</div>
           </div>
           -->
-
-          <div>
-            
-          </div>
           
           <p>© trackwatt.fr • Données : RTE.</p>
         </div>
 
+        <div class="container">
+
+          <h1>Énergie consommée</h1>
+  
+          <div class="card">
+            <h2 id="puissance">Énergie consommée depuis le début du mois</h2>
+
+            <div class="inner-card" id="inner_card_current_month_energy_consumption_evolution">
+              <span style="font-size: 15px;">
+                <span id="current_month_energy_consumption_evolution" style="font-size: 35px; font-weight: bold;">--</span>
+                <span style="font-size: 20px; margin-bottom: 50px; font-weight: bold;"> %</span>
+                <br>du 
+                <span id="current_month_energy_consumption_evolution_day" style="font-size: 15px;">--/--/--</span>
+                <br>
+                <span style="font-size: 20px; margin-top: 20px;"><b>Évolution de consommation</b></span>
+                <br>
+                <span>par rapport à la moyenne des autres années</span>
+              </span>
+            </div>
+
+            
+  
+            <p>Comparaison de l'énergie consommée en France depuis le 1er du mois actuel, avec la consommation habituelle sur le même mois des années précédentes.</p>
+            <div id="currentMonthEnergyConsumption" class="centered"></div>
+            
+            <p>© trackwatt.fr • Données : RTE.</p>
+          </div>
+
         <div class="card">
-          <h2 id="puissance_max">Pic de puissance journalier</h2>
-          <p>Cela correspond à la puissance d'électricité consommée au plus haut de chaque journée. Ce pic de puissance est plus élevé en hiver, entre autres du fait d'une utilisation de chauffage.</p>
+          <h2 id="puissance_max">Pic mensuel de puissance</h2>
+          <p>Cela correspond à la puissance d'électricité consommée au plus haut de chaque mois. Ce pic de puissance est plus élevé en hiver, entre autres du fait d'une utilisation de chauffage.</p>
           <div id="consumptionMaxDaily" class="centered"></div>
           <p>© trackwatt.fr • Données : RTE.</p>
         </div>
@@ -239,6 +265,7 @@
     </main>
 
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
       var data;
 
@@ -253,6 +280,13 @@
         yaxis: {fixedrange: true},
         plot_bgcolor:"rgba(0,0,0,0)",
         paper_bgcolor:"rgba(0,0,0,0)",
+        hoverlabel: {
+          bgcolor: "white",
+          bordercolor: "rgba(0,0,0,0)",
+          font: {
+            color: "black"
+          }
+        },
         margin: {
           l: 35,
           r: 20,
@@ -267,9 +301,21 @@
         this.document.getElementById("instant_power_datetime").innerHTML = "entre " + moment(data.datetime.at(1)).locale("FR").format('LT') + " et " + moment(data.datetime.at(0)).locale("FR").format('LT');
         this.document.getElementById("instant_power").innerHTML = (data.consumption_realised.at(0)).toLocaleString("FR");
       }
+
+      function update_text_current_month_energy_consumption(data_current, data_mean){
+        pourcent = ((data_current.cumsum.at(0) - data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-1) ) / data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-1) * 100).toFixed(1)
+        prefix=""
+        if (pourcent>0){
+          prefix = "+"
+          this.document.getElementById("inner_card_current_month_energy_consumption_evolution").style["background-color"] = "rgb(255, 217, 217)"
+        }
+        this.document.getElementById("current_month_energy_consumption_evolution").innerHTML = prefix + " " + pourcent;
+        this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = data_current.day.at(-1) + " au " + data_current.day.at(0);
+      }
       
       function chart_consumption_short_term(data, show_maximum=false){
         chart_layout = { ...layout };
+        
         chart_layout["annotations"] = [{
             xref: 'paper',
             yref: 'paper',
@@ -317,9 +363,21 @@
                
 
         chart_layout["yaxis"] = {
-          title: "Puissance électrique (MG)",
+          title: "Puissance électrique (MW)",
           automargin: true,
+          fixedrange: true,
+          showspikes: true,
+          spikemode: "across",
+          spikesnap:"cursor",
+          spikecolor: "black",
+          spikethickness: 2
         }
+
+        chart_layout["xaxis"]["showspikes"] = true
+        chart_layout["xaxis"]["spikemode"] = "across"
+        chart_layout["xaxis"]["spikesnap"] = "cursor"
+        chart_layout["xaxis"]["spikecolor"] = "black"
+        chart_layout["xaxis"]["spikethickness"] = 2
 
         var data_chart = [
           {
@@ -327,6 +385,8 @@
             y: data.consumption_realised,
             type: 'line',
             fill: 'tozeroy',
+            hovertemplate: "<br>" + "%{x}<br>" + "Puiss. consommée : <b>%{y:}</b> MW<br>" + "<extra></extra>",
+
             line: {
               color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
               width: 5
@@ -337,11 +397,73 @@
         Plotly.newPlot('consumptionShortTerm', data_chart, chart_layout, config);
       }
 
+      function chart_current_month_energy_consumption(data_current, data_daily, show_maximum=false){
+        chart_layout = { ...layout };
+        
+        chart_layout["shapes"] = []
+
+        chart_layout["yaxis"] = {
+          title: "Énergie consommée depuis le 1er du mois (MWh)",
+          automargin: true,
+          fixedrange: true,
+          showspikes: true,
+          spikemode: "across",
+          spikesnap:"cursor",
+          spikecolor: "black",
+          spikethickness: 2
+        }
+
+        chart_layout["legend"] = {"orientation": "h"}
+
+        chart_layout["xaxis"]["showspikes"] = true
+        chart_layout["xaxis"]["spikemode"] = "across"
+        chart_layout["xaxis"]["spikesnap"] = "cursor"
+        chart_layout["xaxis"]["spikecolor"] = "black"
+        chart_layout["xaxis"]["spikethickness"] = 2
+
+        var data_chart = [
+          {
+            x: data_current.day,
+            y: data_current.cumsum,
+            type: 'line+markers',
+            name: 'octobre 2022',
+            hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée 2022 : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
+
+            line: {
+              color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
+              width: 5
+            },
+            marker: {
+              size: 10
+            }
+          },
+          {
+            x: data_daily.day,
+            y: data_daily.energy_consumption_cumsum,
+            type: 'markers',
+            name: "Moyenne des années précédentes",
+            hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée hab. : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
+
+            line: {
+              color: 'rgba(0, 0, 0, 0.7)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
+              width: 2
+            },
+            marker: {
+              size: 15
+            }
+          }
+        ];
+
+        Plotly.newPlot('currentMonthEnergyConsumption', data_chart, chart_layout, config);
+      }
+
       function chart_consumption_max_daily(data){
         chart_layout = { ...layout };
         chart_layout["yaxis"] = {
-          title: "Puissance électrique (MG)",
+          title: "Puissance électrique (MW)",
           automargin: true,
+          fixedrange: true,
+          showspikes: true
         }
 
         chart_layout["shapes"] = [];
@@ -367,6 +489,7 @@
             y: data.max_monthly_power_consumption,
             type: 'bar',
             fill: 'tozeroy',
+            hovertemplate: "<br>" + "%{x}<br>" + "Puiss. consommée : <b>%{y:}</b> MW<br>" + "<extra></extra>",
             line: {
               color: 'rgb(219, 64, 82)',
               width: 5
@@ -387,13 +510,31 @@
         }
           );
 
-      fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_monthly.json', {cache: "no-store"})
-        .then(response => response.json())
-        .then(data => {
-          chart_consumption_max_daily(data)
+        fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_monthly.json', {cache: "no-store"})
+          .then(response => response.json())
+          .then(data => {
+            chart_consumption_max_daily(data)
+          }
+            );
+
+        fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/current_month_energy_consumption.json', {cache: "no-store"})
+          .then(response => response.json())
+          .then(data => {
+            fetch_mean_daily_energy_consumption(data)
+          }
+            );
+        
+
+        function fetch_mean_daily_energy_consumption(data_current){
+          fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/mean_daily_energy_consumption.json', {cache: "no-store"})
+            .then(response => response.json())
+            .then(data_daily => {
+              chart_current_month_energy_consumption(data_current, data_daily)
+              update_text_current_month_energy_consumption(data_current, data_daily)
+            }
+              );
         }
-          );
-      }
+        }
 
       main();
 
