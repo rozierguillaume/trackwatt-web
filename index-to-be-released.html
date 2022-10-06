@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.svgrepo.com/show/115911/energy.svg">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="generator" content="">
+    <title>TrackWatt</title>
+
+    <meta name="twitter:card" content="TrackWatt est un site internet permettant de suivre la consommation et production d'électricité en France." />
+    <meta name="twitter:site" content="@TrackWatt_" />
+    <meta name="twitter:title" content="TrackWatt : données de consommation et production d'électricité en direct" />
+    <meta name="twitter:description" content="Suivi de la consommation et production d'électricité en France." />
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/rozierguillaume/trackwatt-web/main/assets/brand/banniere.png" />
+
+    <meta property="og:url" content="http://www.trackwatt.fr" />
+    <meta property="og:title" content="TrackWatt" />
+    <meta property="og:description" content="Suivi de la consommation et production d'électricité en France." />
+    <meta property="og:image" content="" />
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/headers/">
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L2ZK14FT0G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-L2ZK14FT0G');
+    </script>
+
+    <style>
+      button {
+        box-shadow: 0 6px 10px 0 rgba(0,0,0,0.05);
+        padding: 5px 5px 5px 5px;
+        width: 50%;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        border: rgb(205, 205, 205) solid 1px;
+        background-color: rgba(255, 255, 255, 1);
+      }
+
+      /* */
+      input[type=checkbox]{
+        height: 0;
+        width: 0;
+        visibility: hidden;
+      }
+
+      label {
+        cursor: pointer;
+        text-indent: -9999px;
+        width: 50px;
+        height: 30px;
+        background: grey;
+        display: block;
+        border-radius: 50px;
+        position: relative;
+      }
+
+      label:after {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 20px;
+        transition: 0.3s;
+      }
+
+      input:checked + label {
+        background: #bada55;
+      }
+
+      input:checked + label:after {
+        left: calc(100% - 5px);
+        transform: translateX(-100%);
+      }
+
+      label:active:after {
+        width: 40px;
+      }
+ 
+      /* */
+
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        margin-top: 0px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        box-shadow: 0 6px 10px 0 rgba(0,0,0,0.05);
+        padding: 30px 50px 20px 50px;
+        border-radius: 30px;
+        max-width: 1000px;
+        margin-bottom: 40px;
+        background-color: rgba(255, 255, 255, 1);
+      }
+
+      .inner-card {
+        padding: 30px 50px 20px 50px;
+        border-radius: 30px;
+        max-width: 450px;
+        margin-bottom: 40px;
+        background-color: rgba(219, 237, 250, 0.5);
+      }
+
+      @media only screen and (max-width: 768px) {
+        .card {
+          padding: 20px 20px 20px 20px;
+        }
+      }
+
+      .centered {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+      }
+
+      body {
+        background-color: rgba(225, 240, 255, 0.2);
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="headers.css" rel="stylesheet">
+  </head>
+
+  <body>
+    
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+      <symbol id="bootstrap" viewBox="0 0 118 94">
+        <title>Bootstrap</title>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+      </symbol>
+      <symbol id="home" viewBox="0 0 16 16">
+        <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+      </symbol>
+      <symbol id="speedometer2" viewBox="0 0 16 16">
+        <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+        <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"/>
+      </symbol>
+      <symbol id="table" viewBox="0 0 16 16">
+        <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/>
+      </symbol>
+      <symbol id="people-circle" viewBox="0 0 16 16">
+        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+      </symbol>
+      <symbol id="grid" viewBox="0 0 16 16">
+        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+      </symbol>
+    </svg>
+
+    <main>
+      <h1 class="visually-hidden">TrackWatt</h1>
+
+      <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+          <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <object type="image/svg+xml" data="https://www.svgrepo.com/show/115911/energy.svg" width="50" height="50" style="margin-right: 10px;"></object>
+            <span class="fs-4" STYLE="margin-right: 10px;">TrackWatt</span>
+          </a>
+
+          <ul class="nav nav-pills">
+          </ul>
+        </header>
+      </div>
+
+      <div class="container" style="max-width: 1100px;">
+
+        <h1>Consommation électrique en temps réel</h1>
+        <p>TrackWatt est un site internet permettant de suivre la consommation et production d'électricité en France. Les données proviennent de <a href="https://www.rte-france.com/">RTE</a>, 
+          le réseau de transport de l'électricité en France. Elles sont mises à jour en temps réel.</p>
+
+        <div class="card">
+          <h2 id="puissance">Puissance électrique consommée</h2>
+
+          <div class="inner-card">
+            <span style="font-size: 15px;">
+              <span id="instant_power" style="font-size: 35px; font-weight: bold;">--</span>
+              <span style="font-size: 20px; margin-bottom: 50px; font-weight: bold;"> MW</span>
+              <br>
+              <span style="color: darkgreen; font-size: 12px;">MODÉRÉE</span> 
+              <br>
+              <span id="instant_power_datetime" style="font-size: 15px;">--h--</span>
+              <br>
+              <span style="font-size: 20px; margin-top: 20px;"><b>Puissance consommée</b></span>
+            </span>
+          </div>
+
+          <p><b>Cela correspond à la puissance actuellement consommée (en MW)</b>, c'est-à-dire la quantité d'énergie consommée à chaque seconde. 
+            <br><br>
+            Par analogie avec un randonneur : 
+            s'il avance vite (vitesse, intensité électrique) et si la pente est raide, alors il doit produire un gros effort (force musculaire, tension électrique) 
+            ce qui se traduit par une puissance développée importante. La puissance (en Watt) dépend donc de la tension (en Volt) et de l'intensité (en Ampère).</p>
+          <p>MW signifie Mega Watts, cela correspond à un million de Watts. Pour comparaison, un sèche-cheveux ou un four consomme environ 2 kW.</p>
+          
+          <div id="consumptionShortTerm" class="centered"></div>
+          
+          <!--
+          <div class='parent'>
+            <div class='child'>
+              <input type="checkbox" id="switch_max" /><label for="switch"></label> 
+            </div>
+            <div class='child'> Afficher le maximum</div>
+          </div>
+          -->
+          
+          <p>© trackwatt.fr • Données : RTE.</p>
+        </div>
+
+
+        <h1>Énergie consommée</h1>
+        <p>L'énergie consommée correspond à la quantité totale d'électricité qui a été utilisée par les Français. L'objectif fixé par le gouvernement est de consommer 10% moins d'électricité cet hiver par rapport aux années habituelles.</p>
+
+
+          <div class="card">
+            <h2 id="puissance">Depuis le début du mois</h2>
+            <div class="inner-card" id="inner_card_current_month_energy_consumption_evolution">
+              <span style="font-size: 15px;">
+                <span id="current_month_energy_consumption_evolution" style="font-size: 35px; font-weight: bold;">--</span>
+                <span style="font-size: 20px; margin-bottom: 50px; font-weight: bold;"> %</span>
+                <br>du 
+                <span id="current_month_energy_consumption_evolution_day" style="font-size: 15px;">--/--/--</span>
+                <br>
+                <span style="font-size: 20px; margin-top: 20px;"><b>Évolution de consommation d'énergie</b></span>
+                <br>
+                <span>par rapport à la moyenne des autres années</span>
+              </span>
+            </div>
+
+            <p>Comparaison de l'énergie consommée en France depuis le 1er du mois actuel, avec la consommation habituelle sur le même mois des années précédentes.
+              Lorsque la courbe bleue est située au-dessus de la ligne noire, cela signifique que l'on a consommé plus d'électricité depuis le début du mois actuel, par rapport à un mois habituel. 
+            </p>
+            <div id="currentMonthEnergyConsumption" class="centered"></div>
+            
+            <p>© trackwatt.fr • Données : RTE.</p>
+          </div>
+        
+        <h1>Quels sont les pics de puissance électrique ?</h1>
+        <p>Des pics de puissances interviennent à certains moments de la journée, et certains mois de l'année. Si la production d'électricité n'est pas suffisante, certaines actions doivent être mises en place par RTE comme des baisses de tension ou des délestages (coupures tournantes de lignes pendant 2h).</p>
+        <div class="card">
+          <h2 id="puissance_max">Pic mensuel de puissance</h2>
+          <p>Cela correspond à la puissance d'électricité consommée au plus haut de chaque mois. Ce pic de puissance est plus élevé en hiver, entre autres du fait d'une utilisation de chauffage.</p>
+          <div id="consumptionMaxDaily" class="centered"></div>
+          <p>© trackwatt.fr • Données : RTE.</p>
+        </div>
+
+        <h1>Et bientôt...</h1>
+        <div class="card">
+          <h2>De nouvelles fonctionnalités arrivent</h2>
+          <p>TrackWatt est en cours de construction, de nouvelles fonctionnalités arrivent bientôt dans le domaine de la consommation et production d'énergie. Pensez à revenir régulièrement !</p>
+          <button type="button" onclick="location.href='https://twitter.com/trackwatt_'">S'abonner à @TrackWatt</button>
+          <button type="button" onclick="location.href='https://twitter.com/guillaumerozier'">S'abonner à @GuillaumeRozier</button>
+        </div>
+
+        <h2 id="APropos">À propos</h2>
+        <p>© trackwatt.fr - @GuillaumeRozier - <a href="https://trackwatt.fr/mentions_legales.html">mentions légales</a></p>
+
+
+      </div>
+
+    </main>
+
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+      var data;
+
+      const config = {
+        displayModeBar: false,
+        responsive: true
+      };
+
+      const layout = {
+        shapes: [],
+        xaxis: {fixedrange: true},
+        yaxis: {fixedrange: true},
+        plot_bgcolor:"rgba(0,0,0,0)",
+        paper_bgcolor:"rgba(0,0,0,0)",
+        hoverlabel: {
+          bgcolor: "white",
+          bordercolor: "rgba(0,0,0,0)",
+          font: {
+            color: "black"
+          }
+        },
+        margin: {
+          l: 35,
+          r: 20,
+          b: 50,
+          t: 50,
+          pad: 4,
+        },
+      };
+
+      
+      function update_data_instant_power(data){
+        this.document.getElementById("instant_power_datetime").innerHTML = "en moyenne entre " + moment(data.datetime.at(1)).locale("FR").format('LT') + " et " + moment(data.datetime.at(0)).locale("FR").format('LT');
+        this.document.getElementById("instant_power").innerHTML = (data.consumption_realised.at(0)).toLocaleString("FR");
+      }
+
+      function update_text_current_month_energy_consumption(data_current, data_mean){
+        pourcent = ((data_current.cumsum.at(1) - data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-2) ) / data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-2) * 100).toFixed(1)
+        prefix=""
+        if (pourcent>0){
+          prefix = "+"
+          this.document.getElementById("inner_card_current_month_energy_consumption_evolution").style["background-color"] = "rgb(255, 217, 217)"
+        }
+        this.document.getElementById("current_month_energy_consumption_evolution").innerHTML = prefix + " " + pourcent;
+        this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = data_current.day.at(-1) + " au " + data_current.day.at(1);
+      }
+      
+      function chart_consumption_short_term(data, show_maximum=false){
+        chart_layout = { ...layout };
+        
+        chart_layout["annotations"] = [{
+            xref: 'paper',
+            yref: 'paper',
+            x: 0.5,
+            xanchor: 'middle',
+            y: 1,
+            yanchor: 'bottom',
+            text: 'Max observé en hiver',
+            font: {color: 'rgba(255, 0, 0, 0.7)', size: 10},
+            showarrow: false
+          },
+          {
+            xref: 'x',
+            yref: 'y',
+            x: data.datetime.at(0),
+            xanchor: 'right',
+            y: data.consumption_realised.at(0),
+            yanchor: 'bottom',
+            text:  data.consumption_realised.at(0).toLocaleString("FR") + ' MW<br>consommés actu.',
+            showarrow: true,
+            arrowhead: 4,
+            yshift: 3,
+            ax: 0,
+            font: {color: "rgb(0, 0, 0)"}
+          },]
+          
+
+        if (show_maximum == false) {
+          chart_layout["shapes"].push(
+              {
+                  type: 'line',
+                  xref: 'paper',
+                  x0: 0,
+                  y0: 87000,
+                  x1: 1,
+                  y1: 87000,
+                  line:{
+                      color: 'rgb(255, 0, 0)',
+                      width: 1,
+                      dash:'dot'
+                  }
+              },
+          )
+        }
+               
+
+        chart_layout["yaxis"] = {
+          title: "Puissance électrique (MW)",
+          automargin: true,
+          fixedrange: true,
+          showspikes: true,
+          spikemode: "across",
+          spikesnap:"cursor",
+          spikecolor: "black",
+          spikethickness: 2
+        }
+
+        chart_layout["xaxis"]["showspikes"] = true
+        chart_layout["xaxis"]["spikemode"] = "across"
+        chart_layout["xaxis"]["spikesnap"] = "cursor"
+        chart_layout["xaxis"]["spikecolor"] = "black"
+        chart_layout["xaxis"]["spikethickness"] = 2
+
+        var data_chart = [
+          {
+            x: data.datetime,
+            y: data.consumption_realised,
+            type: 'line',
+            fill: 'tozeroy',
+            hovertemplate: "<br>" + "%{x}<br>" + "Puiss. consommée : <b>%{y:}</b> MW<br>" + "<extra></extra>",
+
+            line: {
+              color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
+              width: 5
+            }
+          }
+        ];
+
+        Plotly.newPlot('consumptionShortTerm', data_chart, chart_layout, config);
+      }
+
+      function chart_current_month_energy_consumption(data_current, data_daily, show_maximum=false){
+        chart_layout = { ...layout };
+        
+        chart_layout["shapes"] = []
+
+        chart_layout["yaxis"] = {
+          title: "Énergie consommée depuis le 1er du mois (MWh)",
+          automargin: true,
+          fixedrange: true,
+          showspikes: true,
+          spikemode: "across",
+          spikesnap:"cursor",
+          spikecolor: "black",
+          spikethickness: 2
+        }
+
+        chart_layout["legend"] = {"orientation": "h"}
+
+        chart_layout["xaxis"]["showspikes"] = true
+        chart_layout["xaxis"]["spikemode"] = "across"
+        chart_layout["xaxis"]["spikesnap"] = "cursor"
+        chart_layout["xaxis"]["spikecolor"] = "black"
+        chart_layout["xaxis"]["spikethickness"] = 2
+        chart_layout["xaxis"]["range"] = [data_current.day.at(-2), data_current.day.at(0)]
+        chart_layout["xaxis"]["tickformat"]="%d/%m"
+        chart_layout["xaxis"]["ticklabelmode"]="instant"
+        
+        var data_chart = [
+          {
+            x: data_daily.day.slice(0, data_current.cumsum.length-1),
+            y: data_daily.energy_consumption_cumsum.slice(0, data_current.cumsum.length-1),
+            type: 'markers',
+            name: "Années précédentes",
+            hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée hab. : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
+            
+            line: {
+              color: 'rgba(0, 0, 0, 0.9)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
+              width: 3,
+              dash: "dot"
+            },
+            marker: {
+              size: 5
+            }
+          },
+          {
+            x: data_current.day.slice(1, data_current.day.length),
+            y: data_current.cumsum.slice(1, data_current.cumsum.length),
+            type: 'line+markers',
+            name: 'Octobre 2022',
+            hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée 2022 : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
+            line: {
+              color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
+              width: 5
+            },
+            marker: {
+              size: 10
+            }
+          }
+        ];
+
+        Plotly.newPlot('currentMonthEnergyConsumption', data_chart, chart_layout, config);
+      }
+
+      function chart_consumption_max_daily(data){
+        chart_layout = { ...layout };
+        chart_layout["yaxis"] = {
+          title: "Puissance électrique (MW)",
+          automargin: true,
+          fixedrange: true,
+          showspikes: true
+        }
+
+        chart_layout["shapes"] = [];
+
+        chart_layout["annotations"] = [{
+            xref: 'x',
+            yref: 'y',
+            x: data.month.at(0),
+            xanchor: 'right',
+            y: data.max_monthly_power_consumption.at(0),
+            yanchor: 'bottom',
+            text:  data.max_monthly_power_consumption.at(0).toLocaleString("FR") + ' MW max sur<br>le mois actuel',
+            showarrow: true,
+            arrowhead: 4,
+            yshift: 0,
+            ax:0,
+            font: {color: "rgb(0, 0, 0)"}
+          },]
+
+        var data_chart = [
+          {
+            x: data.month,
+            y: data.max_monthly_power_consumption,
+            type: 'bar',
+            fill: 'tozeroy',
+            hovertemplate: "<br>" + "%{x}<br>" + "Puiss. consommée : <b>%{y:}</b> MW<br>" + "<extra></extra>",
+            line: {
+              color: 'rgb(219, 64, 82)',
+              width: 5
+            }
+          }
+        ];
+        
+
+        Plotly.newPlot('consumptionMaxDaily', data_chart, chart_layout, config);
+      }
+
+      function main(){
+        fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_short_term.json', {cache: "no-store"})
+        .then(response => response.json())
+        .then(data => {
+          chart_consumption_short_term(data)
+          update_data_instant_power(data)
+        }
+          );
+
+        fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_monthly.json', {cache: "no-store"})
+          .then(response => response.json())
+          .then(data => {
+            chart_consumption_max_daily(data)
+          }
+            );
+
+        fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/current_month_energy_consumption.json', {cache: "no-store"})
+          .then(response => response.json())
+          .then(data => {
+            fetch_mean_daily_energy_consumption(data)
+          }
+            );
+        
+
+        function fetch_mean_daily_energy_consumption(data_current){
+          fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/mean_daily_energy_consumption.json', {cache: "no-store"})
+            .then(response => response.json())
+            .then(data_daily => {
+              chart_current_month_energy_consumption(data_current, data_daily)
+              update_text_current_month_energy_consumption(data_current, data_daily)
+            }
+              );
+        }
+        }
+
+      main();
+
+      setInterval(function() {
+          main();
+      }, 15 * 60 * 1000);
+      
+      // &#8595
+    </script>
+
+      
+  </body>
+</html>
