@@ -324,7 +324,7 @@
 
       
       function update_data_instant_power(data){
-        this.document.getElementById("instant_power_datetime").innerHTML = "entre " + moment(data.datetime.at(1)).locale("FR").format('LT') + " et " + moment(data.datetime.at(0)).locale("FR").format('LT');
+        this.document.getElementById("instant_power_datetime").innerHTML = "en moyenne entre " + moment(data.datetime.at(1)).locale("FR").format('LT') + " et " + moment(data.datetime.at(0)).locale("FR").format('LT');
         this.document.getElementById("instant_power").innerHTML = (data.consumption_realised.at(0)).toLocaleString("FR");
       }
 
