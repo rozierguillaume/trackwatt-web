@@ -329,14 +329,14 @@
       }
 
       function update_text_current_month_energy_consumption(data_current, data_mean){
-        pourcent = ((data_current.cumsum.at(0) - data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-1) ) / data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-1) * 100).toFixed(1)
+        pourcent = ((data_current.cumsum.at(1) - data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-2) ) / data_mean.energy_consumption_cumsum.at(data_current.cumsum.length-2) * 100).toFixed(1)
         prefix=""
         if (pourcent>0){
           prefix = "+"
           this.document.getElementById("inner_card_current_month_energy_consumption_evolution").style["background-color"] = "rgb(255, 217, 217)"
         }
         this.document.getElementById("current_month_energy_consumption_evolution").innerHTML = prefix + " " + pourcent;
-        this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = data_current.day.at(-1) + " au " + data_current.day.at(0);
+        this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = data_current.day.at(-1) + " au " + data_current.day.at(1);
       }
       
       function chart_consumption_short_term(data, show_maximum=false){
@@ -446,14 +446,14 @@
         chart_layout["xaxis"]["spikesnap"] = "cursor"
         chart_layout["xaxis"]["spikecolor"] = "black"
         chart_layout["xaxis"]["spikethickness"] = 2
-        chart_layout["xaxis"]["range"] = [data_current.day.at(-1), data_current.day.at(0)]
+        chart_layout["xaxis"]["range"] = [data_current.day.at(-2), data_current.day.at(0)]
         chart_layout["xaxis"]["tickformat"]="%d/%m"
         chart_layout["xaxis"]["ticklabelmode"]="instant"
         
         var data_chart = [
           {
-            x: data_daily.day.slice(0, data_current.cumsum.length),
-            y: data_daily.energy_consumption_cumsum.slice(0, data_current.cumsum.length),
+            x: data_daily.day.slice(0, data_current.cumsum.length-1),
+            y: data_daily.energy_consumption_cumsum.slice(0, data_current.cumsum.length-1),
             type: 'markers',
             name: "Années précédentes",
             hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée hab. : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
@@ -468,8 +468,8 @@
             }
           },
           {
-            x: data_current.day,
-            y: data_current.cumsum,
+            x: data_current.day.slice(1, data_current.day.length),
+            y: data_current.cumsum.slice(1, data_current.cumsum.length),
             type: 'line+markers',
             name: 'Octobre 2022',
             hovertemplate: "<br>" + "%{x}<br>" + "Énergie consommée 2022 : <b>%{y:}</b> MWh<br>" + "<extra></extra>",
