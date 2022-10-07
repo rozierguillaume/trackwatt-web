@@ -77,7 +77,7 @@ function update_data_instant_power(data){
   this.document.getElementById("instant_power_datetime").innerHTML = "en moyenne entre " + moment(data.datetime.at(1)).locale("FR").format('LT') + " et " + moment(data.datetime.at(0)).locale("FR").format('LT');
   this.document.getElementById("instant_power").innerHTML = (consommation_instantanee).toLocaleString("FR");
   this.document.getElementById("instant_power_level").innerHTML = instant_power_level + " " + instant_power_level_evolution;
-  this.document.getElementById("instant_power_color").style["color"] = instant_power_color;
+  this.document.getElementById("instant_power_level").style["color"] = instant_power_color;
   
 }
 
