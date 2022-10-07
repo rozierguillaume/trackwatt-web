@@ -3,6 +3,9 @@
   <head>
     <link rel="shortcut icon" type="image/x-icon" href="https://www.svgrepo.com/show/115911/energy.svg">
 
+    <!-- Styles de la page -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/rozierguillaume/trackwatt-web/main/styles.css">
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -36,120 +39,6 @@
 
       gtag('config', 'G-L2ZK14FT0G');
     </script>
-
-    <style>
-      button {
-        box-shadow: 0 6px 10px 0 rgba(0,0,0,0.05);
-        padding: 5px 5px 5px 5px;
-        width: 50%;
-        border-radius: 10px;
-        margin-bottom: 5px;
-        border: rgb(205, 205, 205) solid 1px;
-        background-color: rgba(255, 255, 255, 1);
-      }
-
-      /* */
-      input[type=checkbox]{
-        height: 0;
-        width: 0;
-        visibility: hidden;
-      }
-
-      label {
-        cursor: pointer;
-        text-indent: -9999px;
-        width: 50px;
-        height: 30px;
-        background: grey;
-        display: block;
-        border-radius: 50px;
-        position: relative;
-      }
-
-      label:after {
-        content: '';
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        width: 20px;
-        height: 20px;
-        background: #fff;
-        border-radius: 20px;
-        transition: 0.3s;
-      }
-
-      input:checked + label {
-        background: #bada55;
-      }
-
-      input:checked + label:after {
-        left: calc(100% - 5px);
-        transform: translateX(-100%);
-      }
-
-      label:active:after {
-        width: 40px;
-      }
- 
-      /* */
-
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-
-      h1 {
-        margin-bottom: 20px;
-      }
-
-      h2 {
-        margin-top: 0px;
-        margin-bottom: 20px;
-      }
-
-      .card {
-        box-shadow: 0 6px 10px 0 rgba(0,0,0,0.05);
-        padding: 30px 50px 20px 50px;
-        border-radius: 30px;
-        max-width: 1000px;
-        margin-bottom: 40px;
-        background-color: rgba(255, 255, 255, 1);
-      }
-
-      .inner-card {
-        padding: 30px 50px 20px 50px;
-        border-radius: 30px;
-        max-width: 450px;
-        margin-bottom: 40px;
-        background-color: rgba(219, 237, 250, 0.5);
-      }
-
-      @media only screen and (max-width: 768px) {
-        .card {
-          padding: 20px 20px 20px 20px;
-        }
-      }
-
-      .centered {
-        margin-left: auto;
-        margin-right: auto;
-        width: 100%;
-      }
-
-      body {
-        background-color: rgba(225, 240, 255, 0.2);
-      }
-    </style>
-
     
     <!-- Custom styles for this template -->
     <link href="headers.css" rel="stylesheet">
@@ -294,7 +183,8 @@
 
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
     
-
+  
+  <!-- Scripts de création des graphiques -->
   <script type="text/javascript" src="https://cdn.rawgit.com/rozierguillaume/trackwatt-web/main/scripts.js"></script>
 
       
