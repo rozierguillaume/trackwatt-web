@@ -67,17 +67,22 @@ function update_data_instant_power(data){
 
   instant_power_level_evolution = "";
   if (data.consumption_realised.at(0) > data.consumption_realised.at(4)){
-    instant_power_level_evolution = "&uarr;"
+    instant_power_level_evolution = "EN HAUSSE &uarr;"
+    instant_power_evolution_color = "red"
   }
 
   if (data.consumption_realised.at(0) < data.consumption_realised.at(4)){
-    instant_power_level_evolution = "&darr;"
+    instant_power_level_evolution = "EN BAISSE &darr;"
+    instant_power_evolution_color = "darkgreen"
   }
 
   this.document.getElementById("instant_power_datetime").innerHTML = "en moyenne entre " + moment(data.datetime.at(1)).locale("FR").format('LT') + " et " + moment(data.datetime.at(0)).locale("FR").format('LT');
   this.document.getElementById("instant_power").innerHTML = (consommation_instantanee).toLocaleString("FR");
-  this.document.getElementById("instant_power_level").innerHTML = instant_power_level + " " + instant_power_level_evolution;
+  this.document.getElementById("instant_power_level").innerHTML = instant_power_level;
   this.document.getElementById("instant_power_level").style["color"] = instant_power_color;
+
+  this.document.getElementById("instant_power_level_evolution").innerHTML = instant_power_level_evolution;
+  this.document.getElementById("instant_power_level_evolution").style["color"] = instant_power_evolution_color;
   
 }
 
