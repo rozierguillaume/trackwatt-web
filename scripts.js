@@ -89,7 +89,7 @@ function update_text_current_month_energy_consumption(data_current, data_mean){
     this.document.getElementById("inner_card_current_month_energy_consumption_evolution").style["background-color"] = "rgb(255, 217, 217)"
   }
   this.document.getElementById("current_month_energy_consumption_evolution").innerHTML = prefix + " " + pourcent;
-  this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = data_current.day.at(-1) + " au " + data_current.day.at(1);
+  this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = new Date(data_current.day.at(-1)).toLocaleDateString() + " au " + new Date(data_current.day.at(1)).toLocaleDateString();
 }
 
 function chart_consumption_short_term(data, show_maximum=false){
