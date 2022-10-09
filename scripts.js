@@ -262,7 +262,8 @@ function chart_consumption_max_daily(data){
       arrowhead: 4,
       yshift: 0,
       ax:0,
-      font: {color: "rgb(0, 0, 0)"}
+      font: {color: "rgb(0, 0, 0)"},
+      bgcolor: "rgba(245, 245, 250, 0.8)",
     },]
 
   var data_chart = [
