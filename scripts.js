@@ -260,10 +260,11 @@ function chart_consumption_max_daily(data){
       text:  data.max_monthly_power_consumption.at(0).toLocaleString("FR") + ' MW max sur<br>le mois actuel',
       showarrow: true,
       arrowhead: 4,
-      yshift: 0,
+      yshift: 2,
       ax:0,
+      ay: -125,
+      align: "right",
       font: {color: "rgb(0, 0, 0)"},
-      bgcolor: "rgba(245, 245, 250, 0.8)",
     },]
 
   var data_chart = [
