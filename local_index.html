@@ -48,9 +48,11 @@
     <link href="headers.css" rel="stylesheet">
 
     <!-- Styles de la page -->
-    <link rel="stylesheet" href="https://cdn.rawgit.com/rozierguillaume/trackwatt-web/main/styles.css">
+    <link rel="stylesheet" href="styles.css">
   </head>
 
+  <div w3-include-html="content.html"></div>
+  
   <body>
     
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -138,6 +140,7 @@
           <p>© TrackMyWatt.fr • Données : RTE.</p>
         </div>
 
+
         <div class="card">
           <h2 id="puissance">Prévision de pics de puissance</h2>
 
@@ -152,6 +155,7 @@
             </span>
           </div>
         </div>
+
 
         <h1>Énergie consommée</h1>
         <p>L'énergie consommée correspond à la quantité totale d'électricité qui a été utilisée par les Français. L'objectif fixé par le gouvernement est de consommer 10% moins d'électricité cet hiver par rapport aux années habituelles.</p>
@@ -209,7 +213,7 @@
     
   
   <!-- Scripts de création des graphiques -->
-  <script type="text/javascript" src="https://cdn.rawgit.com/rozierguillaume/trackwatt-web/main/scripts.js"></script>
+  <script type="text/javascript" src="scripts.js"></script>
 
       
   </body>
