@@ -97,6 +97,11 @@ function update_text_current_month_energy_consumption(data_current, data_mean){
   this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = new Date(data_current.day.at(-1)).toLocaleDateString() + " au " + new Date(data_current.day.at(1)).toLocaleDateString();
 }
 
+function update_text_forecast(data_forecast){
+  this.document.getElementById("max_forecast_d_1").innerHTML = data_forecast["consumption_forecast"].toLocaleString();
+  this.document.getElementById("max_forecast_d_1_date").innerHTML = moment(data_forecast["datetime"]).locale("FR").format("DD MMM à H:mm");
+}
+
 function chart_consumption_short_term(data, show_maximum=false){
   chart_layout = { ...layout };
   
@@ -312,6 +317,13 @@ function main(){
       fetch_mean_daily_energy_consumption(data)
     }
       );
+
+  fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/max_forecast_consumption_d1.json', {cache: "no-store"})
+      .then(response => response.json())
+      .then(data => {
+        update_text_forecast(data)
+      }
+        );
   
 
   function fetch_mean_daily_energy_consumption(data_current){
