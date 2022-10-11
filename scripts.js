@@ -28,6 +28,30 @@ const layout = {
   },
 };
 
+function get_str_level_and_color_from_power_consumption(power_consumption){
+  if (power_consumption > 90000){
+    return ["TRÈS ÉLEVÉE", "purple"]
+  }
+
+  if (power_consumption > 75000){
+    return ["ÉLEVÉE", "red"]
+  }
+
+  if (power_consumption > 55000){
+    return ["MODÉRÉE", "orange"]
+  }
+
+  if (power_consumption > 45000){
+    return ["ASSEZ BASSE", "darkgreen"]
+  }
+
+  if (power_consumption > 35000){
+    return ["BASSE", "green"]
+  }
+
+  return ["TRÈS BASSE", "green"]
+}
+
 
 function update_data_instant_power(data){
   consommation_instantanee = data.consumption_realised.at(0)
@@ -35,35 +59,7 @@ function update_data_instant_power(data){
   instant_power_status = "-"
   instant_power_color = "black"
 
-  if (data.consumption_realised.at(0) > 0){
-    instant_power_level = "TRÈS BASSE"
-    instant_power_color = "green"
-  }
-
-  if (data.consumption_realised.at(0) > 35000){
-    instant_power_level = "BASSE"
-    instant_power_color = "green"
-  }
-
-  if (data.consumption_realised.at(0) > 45000){
-    instant_power_level = "ASSEZ BASSE"
-    instant_power_color = "darkgreen"
-  }
-
-  if (data.consumption_realised.at(0) > 55000){
-    instant_power_level = "MODÉRÉE"
-    instant_power_color = "orange"
-  }
-
-  if (data.consumption_realised.at(0) > 75000){
-    instant_power_level = "ÉLEVÉE"
-    instant_power_color = "red"
-  }
-
-  if (data.consumption_realised.at(0) > 90000){
-    instant_power_level = "TRÈS ÉLEVÉE"
-    instant_power_color = "purple"
-  }
+  str_level_power_consumption = get_str_level_and_color_from_power_consumption(consommation_instantanee)
 
   instant_power_level_evolution = "";
   if (data.consumption_realised.at(0) > data.consumption_realised.at(4)){
@@ -78,8 +74,8 @@ function update_data_instant_power(data){
 
   this.document.getElementById("instant_power_datetime").innerHTML = "en moyenne entre " + moment(data.datetime.at(1)).locale("FR").format('LT') + " et " + moment(data.datetime.at(0)).locale("FR").format('LT');
   this.document.getElementById("instant_power").innerHTML = (consommation_instantanee).toLocaleString("FR");
-  this.document.getElementById("instant_power_level").innerHTML = instant_power_level;
-  this.document.getElementById("instant_power_level").style["color"] = instant_power_color;
+  this.document.getElementById("instant_power_level").innerHTML = str_level_power_consumption[0];
+  this.document.getElementById("instant_power_level").style["color"] = str_level_power_consumption[1];
 
   this.document.getElementById("instant_power_level_evolution").innerHTML = instant_power_level_evolution;
   this.document.getElementById("instant_power_level_evolution").style["color"] = instant_power_evolution_color;
@@ -97,9 +93,20 @@ function update_text_current_month_energy_consumption(data_current, data_mean){
   this.document.getElementById("current_month_energy_consumption_evolution_day").innerHTML = new Date(data_current.day.at(-1)).toLocaleDateString() + " au " + new Date(data_current.day.at(1)).toLocaleDateString();
 }
 
-function update_text_forecast(data_forecast){
+function update_text_forecast_d_1(data_forecast){
+  str_level_and_color = get_str_level_and_color_from_power_consumption(data_forecast["consumption_forecast"]);
   this.document.getElementById("max_forecast_d_1").innerHTML = data_forecast["consumption_forecast"].toLocaleString();
   this.document.getElementById("max_forecast_d_1_date").innerHTML = moment(data_forecast["datetime"]).locale("FR").format("DD MMM à H:mm");
+  this.document.getElementById("max_forecast_d_1_level").innerHTML = str_level_and_color[0];
+  this.document.getElementById("max_forecast_d_1_level").style["color"] = str_level_and_color[1];
+}
+
+function update_text_forecast_d_2(data_forecast){
+  str_level_and_color = get_str_level_and_color_from_power_consumption(data_forecast["consumption_forecast"]);
+  this.document.getElementById("max_forecast_d_2").innerHTML = data_forecast["consumption_forecast"].toLocaleString();
+  this.document.getElementById("max_forecast_d_2_date").innerHTML = moment(data_forecast["datetime"]).locale("FR").format("DD MMM à H:mm");
+  this.document.getElementById("max_forecast_d_2_level").innerHTML = str_level_and_color[0];
+  this.document.getElementById("max_forecast_d_2_level").style["color"] = str_level_and_color[1];
 }
 
 function chart_consumption_short_term(data, show_maximum=false){
@@ -316,14 +323,21 @@ function main(){
     .then(data => {
       fetch_mean_daily_energy_consumption(data)
     }
-      );
+  );
 
   fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/max_forecast_consumption_d1.json', {cache: "no-store"})
       .then(response => response.json())
       .then(data => {
-        update_text_forecast(data)
+        update_text_forecast_d_1(data)
       }
-        );
+    );
+
+  fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/max_forecast_consumption_d2.json', {cache: "no-store"})
+      .then(response => response.json())
+      .then(data => {
+        update_text_forecast_d_2(data)
+      }
+    );
   
 
   function fetch_mean_daily_energy_consumption(data_current){
@@ -333,7 +347,7 @@ function main(){
         chart_current_month_energy_consumption(data_current, data_daily)
         update_text_current_month_energy_consumption(data_current, data_daily)
       }
-        );
+    );
   }
   }
 
