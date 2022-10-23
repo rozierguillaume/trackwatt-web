@@ -340,6 +340,7 @@ function main(){
     );
   
 
+  /*
   function fetch_mean_daily_energy_consumption(data_current){
     fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/mean_daily_energy_consumption.json', {cache: "no-store"})
       .then(response => response.json())
@@ -349,7 +350,9 @@ function main(){
       }
     );
   }
+  */
   }
+
 
 main();
 
