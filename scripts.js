@@ -109,9 +109,8 @@ function update_text_forecast_d_2(data_forecast){
   this.document.getElementById("max_forecast_d_2_level").style["color"] = str_level_and_color[1];
 }
 
-function chart_consumption_short_term(data, show_maximum=false){
+function chart_consumption_short_term(data, data_forecast, show_maximum=false){
   chart_layout = { ...layout };
-  
   chart_layout["annotations"] = [{
       xref: 'paper',
       yref: 'paper',
@@ -182,13 +181,27 @@ function chart_consumption_short_term(data, show_maximum=false){
       type: 'line',
       fill: 'tozeroy',
       hovertemplate: "<br>" + "%{x}<br>" + "Puiss. consommée : <b>%{y:}</b> MW<br>" + "<extra></extra>",
-
+      name: "Puissance mesurée",
       line: {
         color: 'rgb(52, 142, 194)', //rouge: 219, 64, 82 vert: 52, 173, 107 bleu: 52, 169, 173
         width: 5
       }
-    }
+    },
+    {
+      x: data_forecast.datetime,
+      y: data_forecast.consumption_forecast,
+      type: 'line',
+      hovertemplate: "<br>" + "%{x}<br>" + "Prévision J-1 puiss. : <b>%{y:}</b> MW<br>" + "<extra></extra>",
+      name: "Prévision",
+      line: {
+        color: 'rgba(52, 142, 194, 0.7)',
+        dash: 'dot',
+        width: 3
+      }
+    },
   ];
+
+  chart_layout["legend"] = {"orientation": "h"}
 
   Plotly.newPlot('consumptionShortTerm', data_chart, chart_layout, config);
 }
@@ -306,17 +319,27 @@ function main(){
   fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_short_term.json', {cache: "no-store"})
   .then(response => response.json())
   .then(data => {
-    chart_consumption_short_term(data)
     update_data_instant_power(data)
-  }
+    fetch_forecast_d0(data)
+    }
+  );
+
+  function fetch_forecast_d0(data){
+    fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/forecast_consumption_d0.json', {cache: "no-store"})
+    .then(response => response.json())
+    .then(data_forecast => {
+      chart_consumption_short_term(data, data_forecast);
+      }
     );
+  }
 
   fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/energy_consumption_max_monthly.json', {cache: "no-store"})
     .then(response => response.json())
     .then(data => {
-      chart_consumption_max_daily(data)
+      chart_consumption_max_daily(data);
+      
     }
-      );
+  );
 
   fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/current_month_energy_consumption.json', {cache: "no-store"})
     .then(response => response.json())
@@ -330,14 +353,14 @@ function main(){
       .then(data => {
         update_text_forecast_d_1(data)
       }
-    );
+  );
 
   fetch('https://storage.sbg.cloud.ovh.net/v1/AUTH_52abbf42f96c4960876d50d2965bb9af/trackwatt-data/max_forecast_consumption_d2.json', {cache: "no-store"})
       .then(response => response.json())
       .then(data => {
         update_text_forecast_d_2(data)
       }
-    );
+  );
   
 
   /*
